@@ -1,0 +1,11 @@
+body {
+    padding-top: 50px;
+}
+
+.app h1 {
+    text-align: center;
+}
+
+.app input{
+    margin-left: 5px;
+}
