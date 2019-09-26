@@ -8,6 +8,6 @@ namespace SoftwareLibrary.Services
 {
     public interface ILibraryService
     {
-        IEnumerable<Software> GetSoftwareByVersionNumber(string version);
+        IEnumerable<Software> GetSoftwareGreaterThanVersionNumber(string version);
     }
 }

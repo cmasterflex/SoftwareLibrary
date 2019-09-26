@@ -20,7 +20,7 @@ namespace SoftwareLibrary.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Software> Software(string version)
         {
-            return _libraryService.GetSoftwareByVersionNumber(version);
+            return _libraryService.GetSoftwareGreaterThanVersionNumber(version);
         }
     }
 }

@@ -1,75 +1,82 @@
 ﻿using SoftwareLibrary.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SoftwareLibrary.Services
 {
     public class LibraryService : ILibraryService
     {
+        public LibraryService(ISoftwareFacade softwareFacade)
+        {
+            _softwareFacade = softwareFacade;
+        }
+        private ISoftwareFacade _softwareFacade;
         private List<Software> _software;
 
-        public List<Software> Software => _software ?? (_software = SoftwareManager.GetAllSoftware().ToList());
+        public List<Software> Software => _software ?? (_software = _softwareFacade.GetAllSoftware().ToList());
 
-        public IEnumerable<Software> GetSoftwareByVersionNumber(string requestedVersion)
+        public IEnumerable<Software> GetSoftwareGreaterThanVersionNumber(string requestedVersion)
         {
             var ret = Software;
             return ret.Where(x => IsGreater(x.Version, requestedVersion)).OrderBy(x => x.Name);
             //return ret;
         }
 
-        private bool IsGreater(string a, string b)
+        private bool IsGreater(string current, string requested)
         {
-            var partsA = a.Split('.');
-            var lengthA = partsA.Length;
-            var partsB = b.Split('.');
-            var lengthB = partsB.Length;
+            var partsCurrent = current.Split('.');
+            var lengthCurrent = partsCurrent.Length;
+            var partsRequested = requested.Split('.');
+            var lengthRequested = partsRequested.Length;
 
             // test majorVersion
-            if (lengthA > 0 && lengthB > 0)
+            if (lengthCurrent > 0 && lengthRequested > 0)
             {
-                var majorVersionA = int.Parse(partsA[0]);
-                var majorVersionB = int.Parse(partsB[0]);
-                if (majorVersionA > majorVersionB) return true;
-                if (majorVersionA < majorVersionB) return false;
+                var majorVersionCurrent = int.Parse(partsCurrent[0]);
+                var majorVersionRequested = int.Parse(partsRequested[0]);
+                if (majorVersionCurrent > majorVersionRequested) return true;
+                if (majorVersionCurrent < majorVersionRequested) return false;
             }
             //major versions are the same
             //test minor version
 
-            //if one has minor version and the other doesn't,
-            //the one with the minor version is greater
-            if (lengthA == 2 && lengthB == 1) return true;
-            if (lengthA == 1 && lengthB == 2) return false;
+            //if current has a minor version and the requested version does not,
+            //current is automatically greater
+            //if the request has a minor version and current does not,
+            //current is automatically less
+            if (lengthCurrent == 2 && lengthRequested == 1) return true;
+            if (lengthCurrent == 1 && lengthRequested == 2) return false;
 
             //if they both have minor versions, compare them
-            if (lengthA > 1 && lengthB > 1)
+            if (lengthCurrent > 1 && lengthRequested > 1)
             {
-                var minorVersionA = int.Parse(partsA[1]);
-                var minorVersionB = int.Parse(partsB[1]);
-                if (minorVersionA > minorVersionB) return true;
-                if (minorVersionA < minorVersionB) return false;
+                var minorVersionCurrent = int.Parse(partsCurrent[1]);
+                var minorVersionRequest = int.Parse(partsRequested[1]);
+                if (minorVersionCurrent > minorVersionRequest) return true;
+                if (minorVersionCurrent < minorVersionRequest) return false;
             }
             //minor versions are the same
             //test patch
 
-            //if one has a patch number and the other doesn't,
-            //the one with the patch number is greater
-            if (lengthA == 3 && lengthB < 3) return true;
-            if (lengthA < 3 && lengthB == 3) return false;
+            //if current has a patch number and the requested version does not,
+            //current is automatically greater
+            //if the request has a minor version and current does not,
+            //current is automatically less
+            if (lengthCurrent == 3 && lengthRequested < 3) return true;
+            if (lengthCurrent < 3 && lengthRequested == 3) return false;
             
             //if they both have patch numbers, compare them
-            if (lengthA > 2 && lengthB > 2)
+            if (lengthCurrent > 2 && lengthRequested > 2)
             {
-                var patchA = int.Parse(partsA[2]);
-                var patchB = int.Parse(partsB[2]);
-                if (patchA > patchB) return true;
-                if (patchA < patchB) return false;
+                var patchCurrent = int.Parse(partsCurrent[2]);
+                var patchRequest = int.Parse(partsRequested[2]);
+                if (patchCurrent > patchRequest) return true;
+                if (patchCurrent < patchRequest) return false;
             }
 
             //if they get to this point, then they have the exact same version number
-            //in that case, arbitrarily return true, list is already sorted alphabetically
-            return true;
+            //in that case, return false, since equal is technically not greater than
+            return false;
         }
 
     }
