@@ -24,6 +24,7 @@ namespace SoftwareLibrary.Services
 
         private bool IsGreater(string current, string requested)
         {
+            if (requested.EndsWith('.')) requested = requested.TrimEnd('.');
             var partsCurrent = current.Split('.');
             var lengthCurrent = partsCurrent.Length;
             var partsRequested = requested.Split('.');

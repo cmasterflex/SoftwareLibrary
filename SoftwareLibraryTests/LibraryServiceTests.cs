@@ -99,5 +99,26 @@ namespace SoftwareLibraryTests
             Assert.IsTrue(actual.First().Name == expectedName);
         }
 
+        [TestMethod]
+        public void HandlesIncompleteVersionRequest()
+        {
+
+            var expectedName = "software3";
+
+            var expectedList = new List<Software>{
+                new Software { Name = "software1", Version = "1.1" },
+                new Software { Name = "software2", Version = "1.1.1" },
+                new Software { Name = expectedName, Version = "1.1.2" }
+            };
+
+            var mockSoftwareFacade = new Mock<ISoftwareFacade>();
+            mockSoftwareFacade.Setup(x => x.GetAllSoftware()).Returns(expectedList);
+            var target = new LibraryService(mockSoftwareFacade.Object);
+
+            var actual = target.GetSoftwareGreaterThanVersionNumber("1.1.").ToList();
+
+            Assert.IsTrue(actual.Count == 2);
+        }
+
     }
 }

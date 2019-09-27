@@ -29,6 +29,7 @@ namespace SoftwareLibrary
             });
 
             services.AddSingleton<ILibraryService, LibraryService>();
+            services.AddSingleton<ISoftwareFacade, SoftwareFacade>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
