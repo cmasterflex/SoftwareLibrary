@@ -81,6 +81,7 @@ export class SoftwareSearchComponent extends Component {
             <div>
                 <div id="version">
                     <input
+                        placeholder="version #"
                         onChange={(event) => this.handleVersionChange(event)}
                         value={this.state.version}
                     />
