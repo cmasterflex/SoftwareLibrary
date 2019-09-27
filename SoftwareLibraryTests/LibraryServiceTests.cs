@@ -119,6 +119,5 @@ namespace SoftwareLibraryTests
 
             Assert.IsTrue(actual.Count == 2);
         }
-
     }
 }
