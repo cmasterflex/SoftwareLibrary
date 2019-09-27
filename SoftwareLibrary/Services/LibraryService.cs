@@ -10,7 +10,7 @@ namespace SoftwareLibrary.Services
         {
             _softwareFacade = softwareFacade;
         }
-        private ISoftwareFacade _softwareFacade;
+        private readonly ISoftwareFacade _softwareFacade;
         private List<Software> _software;
 
         public List<Software> Software => _software ?? (_software = _softwareFacade.GetAllSoftware().ToList());
